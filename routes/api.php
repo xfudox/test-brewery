@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BreweryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -12,3 +13,7 @@ Route::post('/tokens/create', function (Request $request) {
 
     return ['token' => $token->plainTextToken];
 });
+
+Route::get('/breweries', BreweryController::class)
+    ->name('breweries')
+    ->middleware('auth:sanctum');
