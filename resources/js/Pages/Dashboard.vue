@@ -80,7 +80,7 @@ async function getPage(page){
                             <tr v-for="brewery in breweries" :key="brewery.id">
                                 <td> {{ brewery.name }} </td>
                                 <td> {{ brewery.website || '-' }} </td>
-                                <td> {{ brewery.phone }} </td>
+                                <td> {{ brewery.phone || '-' }} </td>
                             </tr>
                         </tbody>
                     </table>
