@@ -24,8 +24,10 @@ const breweries = ref([
 onMounted(async () => {
     await authenticateSpa();
 
-    getPaginationData();
-    getPage(1);
+    await Promise.all([
+        getPaginationData(),
+        getPage(1),
+    ]);
 });
 
 async function authenticateSpa(){
@@ -34,12 +36,16 @@ async function authenticateSpa(){
 
 async function getPaginationData(){
     const url = new URL('https://api.openbrewerydb.org/v1/breweries/meta');
-    const { total } = await axios.get(url, { withCredentials: false });
-    pagination.value.tot_page = total;
+    const { data } = await axios.get(url, { withCredentials: false });
+    pagination.value.tot_page = data.total;
 }
 
 async function getPage(page){
-    pagination.page = page;
+    if(page < 1 || page > pagination.value.tot_page){
+        return;
+    }
+
+    pagination.value.page = page;
 
     const url = new URL('https://api.openbrewerydb.org/v1/breweries');
     url.searchParams.set('page', pagination.value.page);
@@ -81,25 +87,39 @@ async function getPage(page){
                     <nav aria-label="Page navigation example">
                         <ul class="inline-flex -space-x-px text-base h-10">
                             <li>
-                                <span  class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</span>
+                                <span @click="getPage(pagination.page - 1)" class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                    Previous
+                                </span>
                             </li>
                             <li v-if="pagination.page > 2">
-                                <span  class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{ pagination.page - 2 }}</span>
+                                <span @click="getPage(pagination.page - 2)" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                    {{ pagination.page - 2 }}
+                                </span>
                             </li>
                             <li v-if="pagination.page > 1">
-                                <span  class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{ pagination.page - 1 }}</span>
+                                <span @click="getPage(pagination.page - 1)" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                    {{ pagination.page - 1 }}
+                                </span>
                             </li>
                             <li>
-                                <span  aria-current="page" class="flex items-center justify-center px-4 h-10 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">{{ pagination.page }}</span>
+                                <span aria-current="page" class="flex items-center justify-center px-4 h-10 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                                    {{ pagination.page }}
+                                </span>
+                            </li>
+                            <li v-if="pagination.page < pagination.tot_page-1">
+                                <span @click="getPage(pagination.page + 1)" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                    {{ pagination.page + 1 }}
+                                </span>
+                            </li>
+                            <li v-if="pagination.page < pagination.tot_page-2">
+                                <span @click="getPage(pagination.page + 2)" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                    {{ pagination.page + 2 }}
+                                </span>
                             </li>
                             <li>
-                                <span  class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{ pagination.page + 1 }}</span>
-                            </li>
-                            <li>
-                                <span  class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{ pagination.page + 2 }}</span>
-                            </li>
-                            <li>
-                                <span  class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</span>
+                                <span  @click="getPage(pagination.page + 1)" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                    Next
+                                </span>
                             </li>
                         </ul>
                     </nav>
