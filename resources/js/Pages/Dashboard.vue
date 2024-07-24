@@ -22,7 +22,7 @@ const breweries = ref([
 ]);
 
 onMounted(async () => {
-    await authenticateSpa();
+    // await authenticateSpa();
 
     await Promise.all([
         getPaginationData(),
@@ -30,9 +30,9 @@ onMounted(async () => {
     ]);
 });
 
-async function authenticateSpa(){
+/* async function authenticateSpa(){
     await axios.get('/sanctum/csrf-cookie');
-}
+} */
 
 async function getPaginationData(){
     const url = new URL('https://api.openbrewerydb.org/v1/breweries/meta');
@@ -47,11 +47,11 @@ async function getPage(page){
 
     pagination.value.page = page;
 
-    const url = new URL('https://api.openbrewerydb.org/v1/breweries');
+    const url = new URL(window.origin + '/api/breweries');
     url.searchParams.set('page', pagination.value.page);
     url.searchParams.set('per_page', pagination.value.per_page);
 
-    const { data } = await axios.get(url, { withCredentials: false });
+    const { data } = await axios.get(url);
     breweries.value = data;
 }
 </script>
