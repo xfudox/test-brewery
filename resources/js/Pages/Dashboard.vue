@@ -8,15 +8,23 @@ import { ref } from 'vue'
 const pagination = ref({
     page    : 1,
     per_page: 10,
-    // tot_page: 10,
+    tot_page: 10,
 })
 
-const breweries = ref([]);
+const breweries = ref([
+    ...Array(pagination.value.per_page)
+        .keys()
+        .map(k => ({
+            name   : `Brewery ${k}`,
+            website: `www.brewery-${k}.com`,
+            phone  : `123456-${k}`
+        }))
+]);
 
 onMounted(async () => {
     await authenticateSpa();
 
-    // getPaginationData();
+    getPaginationData();
     getPage(1);
 });
 
@@ -24,10 +32,11 @@ async function authenticateSpa(){
     await axios.get('/sanctum/csrf-cookie');
 }
 
-/* async function getPaginationData(){
-    const { total } = await axios.get('https://api.openbrewerydb.org/v1/breweries/meta');
-    pagination.tot_page = total;
-} */
+async function getPaginationData(){
+    const url = new URL('https://api.openbrewerydb.org/v1/breweries/meta');
+    const { total } = await axios.get(url, { withCredentials: false });
+    pagination.value.tot_page = total;
+}
 
 async function getPage(page){
     pagination.page = page;
@@ -36,8 +45,8 @@ async function getPage(page){
     url.searchParams.set('page', pagination.value.page);
     url.searchParams.set('per_page', pagination.value.per_page);
 
-    const results = await axios.get(url, { withCredentials: false });
-    breweries.value = results;
+    const { data } = await axios.get(url, { withCredentials: false });
+    breweries.value = data;
 }
 </script>
 
@@ -53,18 +62,18 @@ async function getPage(page){
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <table class="table-auto">
+                    <table class="table-fixed">
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>website</th>
-                                <th>phone</th>
+                                <th>Website</th>
+                                <th>Phone</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="brewery in breweries" :key="brewery.id">
                                 <td> {{ brewery.name }} </td>
-                                <td> {{ brewery.website }} </td>
+                                <td> {{ brewery.website || '-' }} </td>
                                 <td> {{ brewery.phone }} </td>
                             </tr>
                         </tbody>
@@ -99,3 +108,15 @@ async function getPage(page){
         </div>
     </AuthenticatedLayout>
 </template>
+
+
+<style lang="css" scoped>
+
+thead {
+    text-align: left;
+}
+
+thead th {
+    width: 300px;
+}
+</style>
