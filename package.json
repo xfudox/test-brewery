@@ -4,7 +4,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "test": "vitest --dom"
+        "test": "vitest run --dom"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
