@@ -84,7 +84,7 @@ async function getPage(page){
                             </tr>
                         </tbody>
                     </table>
-                    <nav aria-label="Page navigation example">
+                    <nav>
                         <ul class="inline-flex -space-x-px text-base h-10">
                             <li>
                                 <span @click="getPage(pagination.page - 1)" class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
@@ -123,6 +123,19 @@ async function getPage(page){
                             </li>
                         </ul>
                     </nav>
+                    <select id="per-page"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        v-model="pagination.per_page"
+                        @change="()=>getPage(pagination.page)">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                    </select>
+                    <!-- <input type="number"
+                        id="number-input"
+                        aria-describedby="helper-text-explanation"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        v-model="pagination.per_page"/> -->
                 </div>
             </div>
         </div>
@@ -138,5 +151,9 @@ thead {
 
 thead th {
     width: 300px;
+}
+
+select {
+    width: 100px;
 }
 </style>
