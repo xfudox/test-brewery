@@ -2,9 +2,11 @@
 
 namespace Tests\Browser;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Dusk\Browser;
+use App\Models\User;
 use Tests\DuskTestCase;
+use Laravel\Dusk\Browser;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class LoginPageTest extends DuskTestCase
 {
@@ -31,6 +33,22 @@ class LoginPageTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->visit('/login')
                 ->assertVisible("form button");
+        });
+    }
+
+    public function test_user_can_login(): void
+    {
+        User::factory()
+            ->create([
+                "email" => "test@example.com",
+                "password" => Hash::make("password")
+            ]);
+
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/login')
+                ->value('input[type=email]', 'test@example.com')
+                ->value('input[type=password]', 'password')
+                ->click('form button');
         });
     }
 }
