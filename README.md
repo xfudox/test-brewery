@@ -1,34 +1,48 @@
-# Il progetto è stato inizializzato usando Laravel Sail
- - Installare le dipendenze di Composer
+# Struttura
+Per la crezione del progetto sono stati utilizzati i seguenti package:
+ - Sail in modo da utilizzare Docker per lo sviluppo locale
+ - Breeze come starter kit con VueJS per il frontend e lo scaffolding delle pagine necessarie
+ - Sanctum per la parte di autenticazione alle API
+ - Dusk per i test in browser
+
+# Bootstrap del progetto
+ 1. Installare le dipendenze di Composer
     ```shell
     composer install
     ```
 
- - Avviare i container tramite Sail:
+ 2. Avviare i container tramite Sail:
     ```shell
     ./vendor/bin/sail up -d
     ```
 
- - Preparazione del DB
+ 3. Preparazione del DB
     Da dentro il container `app`:
     ```shell
     php artisan migrate
     php artisan db:seed
+    ```
+
+ 4. Build del frontend
+    Da dentro il container `app`:
+    ```shell
     npm install
     npm run build
     ```
 
- - Accesso all'applicazione
-    Accedere a `localhost` ed effettuare il login come root con le credenziali:
-    - email: `test@example`
-    - password: `password`
+# Accesso all'applicazione
+Accedere a `localhost` ed effettuare il login come root con le credenziali:
+- email: `test@example`
+- password: `password`
 
 
- - Esecuzione dei test
-    ```shell
-    # unit/feature test
-    ./vendor/bin/sail test
+# Esecuzione dei test
+## unit/feature test
+```shell
+./vendor/bin/sail test
+```
 
-    # browser test using laravel Dusk
-    ./vendor/bin/sail dusk
-    ```
+## browser test
+```shell
+./vendor/bin/sail dusk
+```
