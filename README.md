@@ -19,17 +19,15 @@ Per la crezione del progetto sono stati utilizzati i seguenti package:
     ```
 
  4. Preparazione del DB
-    Da dentro il container `app`:
     ```shell
-    php artisan migrate
-    php artisan db:seed
+    docker exec app php artisan migrate
+    docker exec app php artisan db:seed
     ```
 
  5. Build del frontend
-    Da dentro il container `app`:
     ```shell
-    npm install
-    npm run build
+    docker exec app npm install
+    docker exec app npm run build
     ```
 
 # Accesso all'applicazione
