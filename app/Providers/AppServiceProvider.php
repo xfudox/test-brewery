@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use App\Services\BreweryService;
+use App\Interfaces\BreweryService;
+use App\Services\OpenBreweryDBService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(BreweryService::class, function ($app) {
-            return new BreweryService();
+            return new OpenBreweryDBService();
         });
     }
 

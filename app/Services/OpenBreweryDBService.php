@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Interfaces\BreweryService;
 use Illuminate\Support\Facades\Http;
 
-class BreweryService {
+class OpenBreweryDBService implements BreweryService {
     private string $breweryApiUrl='https://api.openbrewerydb.org/v1/breweries';
 
     public function fetch(int $page, int $per_page) {
