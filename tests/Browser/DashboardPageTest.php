@@ -47,30 +47,34 @@ class DashboardPageTest extends DuskTestCase
         });
     }
 
-    public function test_breweries_table_first_column_is_name_column(): void
+    public function test_breweries_table_has_three_columns(): void
     {
         $this->browse(function (Browser $browser) {
+            $thList = $browser->loginAs(User::factory()->create())
+                ->visit('/dashboard')
+                ->script("return Array.from(document.querySelectorAll('table#breweries-table thead tr th'))");
+            $this->assertCount(3, $thList[0]);
+        });
+
+    }
+
+    /** @dataProvider breweriesTableColumnDataProvider */
+    public function test_breweries_table_has_expected_column(int $pos, string $label): void
+    {
+        $this->browse(function (Browser $browser) use ($pos, $label) {
+            $selector = "table#breweries-table thead tr th:nth-of-type($pos)";
             $browser->loginAs(User::factory()->create())
                 ->visit('/dashboard')
-                ->assertSeeIn('table#breweries-table thead tr th:nth-of-type(1)', 'Name');
+                ->assertSeeIn($selector, $label);
         });
     }
 
-    public function test_breweries_table_second_column_is_website_column(): void
+    static public function breweriesTableColumnDataProvider()
     {
-        $this->browse(function (Browser $browser) {
-            $browser->loginAs(User::factory()->create())
-                ->visit('/dashboard')
-                ->assertSeeIn('table#breweries-table thead tr th:nth-of-type(2)', 'Website');
-        });
-    }
-
-    public function test_breweries_table_third_column_is_phone_column(): void
-    {
-        $this->browse(function (Browser $browser) {
-            $browser->loginAs(User::factory()->create())
-                ->visit('/dashboard')
-                ->assertSeeIn('table#breweries-table thead tr th:nth-of-type(3)', 'Phone');
-        });
+        return [
+            'name'    => [1, 'Name'],
+            'website' => [2, 'Website'],
+            'phone'   => [3, 'Phone'],
+        ];
     }
 }
