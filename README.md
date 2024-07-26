@@ -6,24 +6,26 @@ Per la crezione del progetto sono stati utilizzati i seguenti package:
  - Dusk per i test in browser
 
 # Bootstrap del progetto
- 1. Installare le dipendenze di Composer
+ 1. Varibaili d'ambiente: rinominare `.env.example` in `.env`
+
+ 2. Installare le dipendenze di Composer
     ```shell
     composer install
     ```
 
- 2. Avviare i container tramite Sail:
+ 3. Avviare i container tramite Sail:
     ```shell
     ./vendor/bin/sail up -d
     ```
 
- 3. Preparazione del DB
+ 4. Preparazione del DB
     Da dentro il container `app`:
     ```shell
     php artisan migrate
     php artisan db:seed
     ```
 
- 4. Build del frontend
+ 5. Build del frontend
     Da dentro il container `app`:
     ```shell
     npm install
