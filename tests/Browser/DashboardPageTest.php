@@ -3,6 +3,7 @@
 namespace Tests\Browser;
 
 use App\Models\User;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -47,18 +48,18 @@ class DashboardPageTest extends DuskTestCase
         });
     }
 
-    public function test_breweries_table_has_three_columns(): void
+    public function test_breweries_table_has_four_columns(): void
     {
         $this->browse(function (Browser $browser) {
             $thList = $browser->loginAs(User::factory()->create())
                 ->visit('/dashboard')
                 ->script("return Array.from(document.querySelectorAll('table#breweries-table thead tr th'))");
-            $this->assertCount(3, $thList[0]);
+            $this->assertCount(4, $thList[0]);
         });
 
     }
 
-    /** @dataProvider breweriesTableColumnDataProvider */
+    #[DataProvider('breweriesTableColumnDataProvider')]
     public function test_breweries_table_has_expected_column(int $pos, string $label): void
     {
         $this->browse(function (Browser $browser) use ($pos, $label) {
@@ -75,6 +76,7 @@ class DashboardPageTest extends DuskTestCase
             'name'    => [1, 'Name'],
             'website' => [2, 'Website'],
             'phone'   => [3, 'Phone'],
+            'country' => [4, 'Country'],
         ];
     }
 }

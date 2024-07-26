@@ -19,24 +19,32 @@ Per la crezione del progetto sono stati utilizzati i seguenti package:
     ```
 
  4. Preparazione del DB
-    Da dentro il container `app`:
     ```shell
-    php artisan migrate
-    php artisan db:seed
+    docker exec app php artisan migrate
+    docker exec app php artisan db:seed
     ```
 
  5. Build del frontend
-    Da dentro il container `app`:
     ```shell
-    npm install
-    npm run build
+    docker exec app npm install
+    docker exec app npm run build
     ```
 
 # Accesso all'applicazione
-Accedere a `localhost` ed effettuare il login come root con le credenziali:
-- email: `test@example`
+Accedere a `localhost/login` ed effettuare il login come root con le credenziali:
+- email: `test@example.com`
 - password: `password`
 
+# Autenticazione via Sanctum
+## SPA e CSRF
+Sanctum richiede una prima chiamata `POST` a `/sanctum/csrf-cookie` per inizializzare la protezione CSRF della SPA: in questo modo viene settato un cookie `XSRF-TOKEN` che deve essere poi passato tramite l'header `X-XSRF-TOKEN` nelle successive chiamate.
+E' stato utilizzato il client Axios che riconosce automaticamente questo processo e salva il token per riutilizzarlo nel modo richiesto per le successive chiamate senza bisogno di configurazioni.
+
+## Login utente
+Dopo aver impostato la protezione CSRF bisogna effettuare una chiamata `POST` a `/login` in modo da autenticare l'utente tramite il cookie di sessione: questa chiamata viene già effettuata dalla pagina di login di Breeze senza bisogno di una implementazione manuale.
+
+## API
+Sanctum permette di verificare l'autenticazione dell'utente per l'accesso alle API tramite il middleware `auth:sanctum`che effettua un check dell'header `Authorization`.
 
 # Esecuzione dei test
 ## unit/feature test
@@ -45,6 +53,7 @@ Accedere a `localhost` ed effettuare il login come root con le credenziali:
 ```
 
 ## browser test
+Al momento l'esecuzione dei browser test in locale tramite Dusk effettua un refresh del database rendendo l'applicazione inutilizzabile al termine dei test.
 ```shell
 ./vendor/bin/sail dusk
 ```

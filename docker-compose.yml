@@ -7,6 +7,7 @@ services:
             args:
                 WWWGROUP: '${WWWGROUP}'
         image: sail-8.3/app
+        platform: linux/x86_64
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -28,6 +29,7 @@ services:
     mysql:
         container_name: database
         image: 'mysql/mysql-server:8.0'
+        platform: linux/x86_64
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
         environment:
@@ -53,6 +55,7 @@ services:
     selenium:
         container_name: selenium
         image: selenium/standalone-chrome
+        platform: linux/x86_64
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         volumes:

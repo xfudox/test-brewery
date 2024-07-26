@@ -74,13 +74,15 @@ async function getPage(page){
                                 <th>Name</th>
                                 <th>Website</th>
                                 <th>Phone</th>
+                                <th>Country</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="brewery in breweries" :key="brewery.id">
                                 <td> {{ brewery.name }} </td>
-                                <td> {{ brewery.website || '-' }} </td>
+                                <td> {{ brewery.website_url || '-' }} </td>
                                 <td> {{ brewery.phone || '-' }} </td>
+                                <td> {{ brewery.country }} </td>
                             </tr>
                         </tbody>
                     </table>
@@ -148,7 +150,16 @@ thead th {
     width: 300px;
 }
 
+tbody tr:nth-of-type(odd){
+    background-color: #eee;
+}
+
 select {
     width: 100px;
+}
+
+nav {
+    float: left;
+    margin-right: 10px;
 }
 </style>
